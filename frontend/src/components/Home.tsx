@@ -1,12 +1,20 @@
+import { redirect } from "react-router-dom"
+import { useAuth } from "../AuthContext"
+import { AuthContextType } from "../types/user"
+
 export function HomeLayout() {
+  const { user } = useAuth() as AuthContextType
+
   return (
     <div>
-      Home
+      Hello {user.username}, welcome to your homepage!
     </div>
   )
 }
 
 export function HomeLoader() {
-  // TODO: redirect to signup if unauthenticated
-  return false
+  const { user } = useAuth() as AuthContextType
+  if (!user.isAuthenticated) {
+    return redirect("/login")
+  }
 }
