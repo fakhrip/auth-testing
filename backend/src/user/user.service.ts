@@ -25,12 +25,12 @@ export class UserService {
     return this.userRepository.findOne(findOneOptions);
   }
 
-  async findOneByid(id: string): Promise<User | null> {
+  async findOneById(id: string): Promise<User | null> {
     return this.userRepository.findOne(id);
   }
 
   async findById(id: string): Promise<IUserRO> {
-    const user = await this.findOneByid(id);
+    const user = await this.findOneById(id);
 
     if (!user) {
       const errors = { User: ' not found' };
