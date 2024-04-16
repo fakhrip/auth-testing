@@ -30,7 +30,12 @@ export class UserService {
 
     if (!user) {
       const errors = { User: ' not found' };
-      throw new HttpException({ errors }, 401);
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
+
+    if (user.deleted) {
+      const errors = { User: ' have already been deleted' };
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
 
     return this.buildUserRO(user);
@@ -44,36 +49,58 @@ export class UserService {
   async create(dto: UserDto): Promise<IUserRO> {
     // check uniqueness of username
     const { username, password } = dto;
-    const exists = await this.userRepository.count({
+    const [foundUser, exists] = await this.userRepository.findAndCount({
       username,
     });
 
-    if (exists > 0) {
+    // since username is unique, foundUser list should not be more than 1
+    const possibleUser = foundUser?.[0];
+    let user: User = null;
+
+    if (!possibleUser || !possibleUser.deleted) {
+      // error if user exist and its not deleted previously
+      if (exists > 0) {
+        throw new HttpException(
+          {
+            message: 'Input data validation failed',
+            errors: { username: 'User with that username is already exist.' },
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      // create new user
+      user = new User(username, password);
+      const errors = await validate(user);
+
+      if (errors.length > 0) {
+        throw new HttpException(
+          {
+            message: 'Input data validation failed',
+            errors: { username: 'Userinput is not valid.' },
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      // write the new user to db
+      this.em.persist(user);
+    } else {
+      // change deleted status to false
+      user = possibleUser;
+      user.deleted = false;
+    }
+
+    if (!user) {
       throw new HttpException(
         {
-          message: 'Input data validation failed',
-          errors: { username: 'User with that username is already exist.' },
+          message: 'Something wrong happened, please try again later',
         },
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
 
-    // create new user
-    const user = new User(username, password);
-    const errors = await validate(user);
-
-    if (errors.length > 0) {
-      throw new HttpException(
-        {
-          message: 'Input data validation failed',
-          errors: { username: 'Userinput is not valid.' },
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    // write the new user to db
-    await this.em.persistAndFlush(user);
+    await this.em.flush();
     return this.buildUserRO(user);
   }
 

@@ -4,6 +4,7 @@ import {
   Property,
   Opt,
   EntityRepositoryType,
+  Unique,
 } from '@mikro-orm/core';
 import { UserRepository } from './user.repository';
 import { createHmac } from 'crypto';
@@ -15,6 +16,7 @@ export class User {
   @PrimaryKey({ type: 'uuid', defaultRaw: 'gen_random_uuid()' })
   id: string;
 
+  @Unique()
   @Property({ hidden: true })
   username!: string;
 

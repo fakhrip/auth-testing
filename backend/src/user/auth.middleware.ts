@@ -27,17 +27,17 @@ export class AuthMiddleware implements NestMiddleware {
       (authHeaders as string).split(' ')?.[0] == 'Bearer' &&
       (authHeaders as string).split(' ')?.[1]
     ) {
-      const token = (authHeaders as string).split(' ')[1];
-      const decodedToken = await this.firebaseApp.verifyIdToken(token);
-      const user = await this.userService.findById(decodedToken.uid);
+      try {
+        const token = (authHeaders as string).split(' ')[1];
+        const decodedToken = await this.firebaseApp.verifyIdToken(token);
+        const user = await this.userService.findById(decodedToken.uid);
 
-      if (!user) {
-        throw new HttpException('User not found.', HttpStatus.UNAUTHORIZED);
+        req.user = user.user;
+        req.user.id = decodedToken.uid;
+        next();
+      } catch (error) {
+        throw new HttpException(error, HttpStatus.UNAUTHORIZED);
       }
-
-      req.user = user.user;
-      req.user.id = decodedToken.uid;
-      next();
     } else {
       throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
     }

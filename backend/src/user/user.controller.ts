@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -42,7 +43,17 @@ export class UserController {
 
     const errors = { message: 'User with given email/password not found' };
     if (!foundUser) {
-      throw new HttpException({ errors }, 401);
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
+
+    if (foundUser.deleted) {
+      throw new HttpException(
+        {
+          message:
+            'This user have been deleted previously, please create a new user back again',
+        },
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     return this.userService.buildUserRO(
