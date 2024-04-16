@@ -14,7 +14,8 @@ import { UserService } from './user.service';
 import { ValidationPipe } from 'src/util/validation.pipe';
 import { UserDto } from './dto';
 import { FirebaseApp } from 'src/util/firebase';
-import { User } from './user.entity';
+import { User as UserEntity } from './user.entity';
+import { User } from './user.decorator';
 
 @Controller()
 export class UserController {
@@ -22,6 +23,11 @@ export class UserController {
     private readonly userService: UserService,
     private readonly firebaseApp: FirebaseApp,
   ) {}
+
+  @Get('user')
+  async findMe(@User('username') username: string): Promise<IUserRO> {
+    return this.userService.findByUsername(username);
+  }
 
   @UsePipes(new ValidationPipe())
   @Post('users')
@@ -40,7 +46,7 @@ export class UserController {
     }
 
     return this.userService.buildUserRO(
-      new User(foundUser.username, foundUser.password),
+      new UserEntity(foundUser.username, foundUser.password),
     );
   }
 }
