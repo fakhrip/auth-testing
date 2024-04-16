@@ -112,4 +112,9 @@ export class UserService {
 
     return { user: userRO };
   }
+
+  async updateLatestLogin(user: User): Promise<void> {
+    user.latestLogin = new Date();
+    await this.em.flush();
+  }
 }

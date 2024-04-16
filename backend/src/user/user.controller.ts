@@ -56,6 +56,8 @@ export class UserController {
       );
     }
 
+    this.userService.updateLatestLogin(foundUser);
+
     return this.userService.buildUserRO(
       new UserEntity(foundUser.username, foundUser.password),
     );
