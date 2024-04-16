@@ -14,7 +14,10 @@ export function HomeLayout() {
 
 export function HomeLoader() {
   const { user } = useAuth() as AuthContextType
+
   if (!user.isAuthenticated) {
     return redirect("/login")
   }
+
+  return null
 }

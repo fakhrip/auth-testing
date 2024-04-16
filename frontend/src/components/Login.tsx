@@ -1,3 +1,7 @@
+import { redirect } from "react-router-dom"
+import { useAuth } from "../AuthContext"
+import { AuthContextType } from "../types/user"
+
 export function LoginLayout() {
   return (
     <div>
@@ -7,8 +11,13 @@ export function LoginLayout() {
 }
 
 export function LoginLoader() {
-  // TODO: redirect to home if authenticated
-  return false
+  const { user } = useAuth() as AuthContextType
+
+  if (user.isAuthenticated) {
+    return redirect("/home")
+  }
+
+  return null
 }
 
 export function LoginAction() {
