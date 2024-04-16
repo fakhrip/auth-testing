@@ -2,7 +2,7 @@ import { RouterProvider, createBrowserRouter, redirect } from 'react-router-dom'
 import { LoginAction, LoginLayout, LoginLoader } from './components/Login';
 import { HomeLayout, HomeLoader } from './components/Home';
 import { SignupAction, SignupLayout, SignupLoader } from './components/Signup';
-import { Context, createContext, useState } from 'react';
+import { AuthProvider } from './AuthContext';
 
 const router = createBrowserRouter([
   {
@@ -49,18 +49,11 @@ const router = createBrowserRouter([
   },
 ]);
 
-const AuthContext: Context<User> = createContext<User>({
-  isAuthenticated: false
-})
 
 export default function App() {
-  const [authenticatedUser] = useState<User>({
-    isAuthenticated: false
-  });
-
   return (
-    <AuthContext.Provider value={authenticatedUser}>
+    <AuthProvider>
       <RouterProvider router={router} fallbackElement={<p>Initial Load...</p>} />
-    </AuthContext.Provider>
+    </AuthProvider>
   );
 }
