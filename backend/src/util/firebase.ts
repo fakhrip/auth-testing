@@ -7,7 +7,7 @@ import {
   initializeApp,
 } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
-import firebaseServiceAccount from '../firebaseServiceAccount.json';
+import 'dotenv/config';
 
 @Injectable()
 export class FirebaseApp {
@@ -19,7 +19,14 @@ export class FirebaseApp {
       this.firebaseApp =
         currentApps.length === 0
           ? initializeApp({
-              credential: cert(firebaseServiceAccount as ServiceAccount),
+              credential: cert(
+                JSON.parse(
+                  Buffer.from(
+                    process.env.SERVICE_ACCOUNT || '',
+                    'base64',
+                  ).toString(),
+                ) as ServiceAccount,
+              ),
             })
           : currentApps[0];
     } catch (err) {

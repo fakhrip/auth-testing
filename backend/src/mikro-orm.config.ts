@@ -1,6 +1,7 @@
 import { defineConfig } from '@mikro-orm/postgresql';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
 import { Migrator } from '@mikro-orm/migrations';
+import 'dotenv/config';
 
 export default defineConfig({
   // MikroORM specific configurations
@@ -10,9 +11,9 @@ export default defineConfig({
   extensions: [Migrator],
 
   // Database credentials
-  host: 'localhost',
-  port: 3307,
-  user: 'root',
-  password: '',
-  dbName: 'dbname',
+  host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT),
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  dbName: process.env.DB_DBNAME,
 });
