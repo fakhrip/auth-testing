@@ -33,13 +33,17 @@ export class UserService {
     const user = await this.findOneById(id);
 
     if (!user) {
-      const errors = { User: ' not found' };
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        { message: 'User not found' },
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     if (user.deleted) {
-      const errors = { User: ' have already been deleted' };
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        { message: 'User have already been deleted' },
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     return this.buildUserRO(user);

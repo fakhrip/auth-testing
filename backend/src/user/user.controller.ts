@@ -65,7 +65,7 @@ export class UserController {
 
   @Post('users/delete')
   async delete(@User('id') userId: string) {
-    const foundUser = await this.userService.findOneByid(userId);
+    const foundUser = await this.userService.findOneById(userId);
 
     if (foundUser.deleted) {
       throw new HttpException(
