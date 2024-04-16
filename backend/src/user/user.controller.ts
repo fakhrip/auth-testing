@@ -62,4 +62,26 @@ export class UserController {
       new UserEntity(foundUser.username, foundUser.password),
     );
   }
+
+  @Post('users/delete')
+  async delete(@User('id') userId: string) {
+    const foundUser = await this.userService.findOneByid(userId);
+
+    if (foundUser.deleted) {
+      throw new HttpException(
+        {
+          message: 'This user have been deleted previously',
+          success: false,
+        },
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    this.userService.removeUser(foundUser);
+
+    return {
+      message: 'This user have been successfully deleted',
+      success: true,
+    };
+  }
 }

@@ -25,8 +25,12 @@ export class UserService {
     return this.userRepository.findOne(findOneOptions);
   }
 
+  async findOneByid(id: string): Promise<User | null> {
+    return this.userRepository.findOne(id);
+  }
+
   async findById(id: string): Promise<IUserRO> {
-    const user = await this.userRepository.findOne(id);
+    const user = await this.findOneByid(id);
 
     if (!user) {
       const errors = { User: ' not found' };
@@ -115,6 +119,12 @@ export class UserService {
 
   async updateLatestLogin(user: User): Promise<void> {
     user.latestLogin = new Date();
+    await this.em.flush();
+  }
+
+  // Do soft deletion instead of removing from db
+  async removeUser(user: User): Promise<void> {
+    user.deleted = true;
     await this.em.flush();
   }
 }
