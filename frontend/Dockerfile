@@ -8,7 +8,7 @@ FROM nginx:alpine
 # For healthcheck
 RUN apk add --no-cache curl
 
-COPY --from=build /apps/dist /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 COPY ./frontend/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
