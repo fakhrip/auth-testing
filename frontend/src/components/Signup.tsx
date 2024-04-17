@@ -1,7 +1,5 @@
-import { LoaderFunctionArgs, redirect, useActionData, useFetcher, useNavigation } from "react-router-dom";
-import { createAccount } from "../util/auth";
-import { useAuth } from "../AuthContext";
-import { AuthContextType } from "../types/user";
+import { LoaderFunctionArgs, redirect, useActionData, useFetcher, useNavigation, Link } from "react-router-dom";
+import { authProvider, createAccount } from "../util/auth";
 import { loginFirebase } from "../util/firebase";
 
 export function SignupLayout() {
@@ -15,10 +13,10 @@ export function SignupLayout() {
   return (
     <div>
       Signup
-      <fetcher.Form method="post" action="/">
+      <fetcher.Form method="post" action="/signup">
         <label>
           Username: <input name="username" />
-        </label>
+        </label> <br />
         <label>
           Password: <input name="password" />
         </label>
@@ -29,6 +27,9 @@ export function SignupLayout() {
           <p style={{ color: "red" }}>{actionData.error}</p>
         ) : null}
       </fetcher.Form>
+
+      <br />
+      <Link to="/login">Go to Login Page</Link>
     </div>
   )
 }
@@ -40,7 +41,7 @@ export function SignupLoader() {
 }
 
 export async function SignupAction({ request }: LoaderFunctionArgs) {
-  const { updateUser } = useAuth() as AuthContextType
+  const { updateUser } = authProvider;
   let formData = await request.formData();
 
   let username = formData.get("username") as string | null;
@@ -67,7 +68,7 @@ export async function SignupAction({ request }: LoaderFunctionArgs) {
         ...await loginFirebase(response.jsonResponse.token)
       })
 
-      return redirect("/home");
+      return redirect("/");
     }
 
     return {

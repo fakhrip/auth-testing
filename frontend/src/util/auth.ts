@@ -1,3 +1,14 @@
+import { AuthContextType, IUser } from "../types/user";
+
+export const authProvider: AuthContextType = {
+  user: {
+    isAuthenticated: false,
+  },
+  updateUser(user: IUser) {
+    authProvider.user = user;
+  },
+};
+
 export async function createAccount(username: string, password: string) {
   const rawResponse = await fetch(
     `${import.meta.env.VITE_BACKEND_BASE_URL}/users`,

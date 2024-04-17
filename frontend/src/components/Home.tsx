@@ -1,9 +1,8 @@
 import { redirect, useActionData, useFetcher, useNavigation } from "react-router-dom";
-import { useAuth } from "../AuthContext"
-import { AuthContextType } from "../types/user"
+import { authProvider } from "../util/auth";
 
 export function HomeLayout() {
-  const { user } = useAuth() as AuthContextType
+  const { user } = authProvider;
 
   let deleteFetcher = useFetcher();
   let logoutFetcher = useFetcher();
@@ -16,6 +15,7 @@ export function HomeLayout() {
     <div>
       Hello {user.username}, welcome to your homepage!
 
+      <br />
       <deleteFetcher.Form method="post" action="/delete">
         <button type="submit" disabled={isDeletingAccount}>
           {isDeletingAccount ? "Deleting account..." : "Delete account"}
@@ -25,6 +25,7 @@ export function HomeLayout() {
         ) : null}
       </deleteFetcher.Form>
 
+      <br />
       <logoutFetcher.Form method="post" action="/logout">
         <button type="submit" disabled={isLoggingOut}>
           {isLoggingOut ? "Logging out..." : "Logout"}
@@ -38,7 +39,7 @@ export function HomeLayout() {
 }
 
 export function HomeLoader() {
-  const { user } = useAuth() as AuthContextType
+  const { user } = authProvider;
 
   if (!user.isAuthenticated) {
     return redirect("/login")
