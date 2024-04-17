@@ -1,11 +1,29 @@
 import { AuthContextType, IUser } from "../types/user";
+import Cookies from "js-cookie";
 
 export const authProvider: AuthContextType = {
   user: {
-    isAuthenticated: false,
+    username: Cookies.get("username"),
+    token: Cookies.get("tokencookie"),
+    idToken: Cookies.get("idtokencookie"),
+    isAuthenticated:
+      Cookies.get("idtokencookie") != undefined &&
+      Cookies.get("idtokencookie") != "",
   },
   updateUser(user: IUser) {
     authProvider.user = user;
+
+    if (user.username != undefined) {
+      Cookies.set("username", user.username);
+    }
+
+    if (user.token != undefined) {
+      Cookies.set("tokencookie", user.token);
+    }
+
+    if (user.idToken != undefined) {
+      Cookies.set("idtokencookie", user.idToken);
+    }
   },
 };
 

@@ -4,6 +4,7 @@ import { HomeLayout, HomeLoader } from './components/Home';
 import { SignupAction, SignupLayout, SignupLoader } from './components/Signup';
 import { authProvider, deleteAccount } from './util/auth';
 import { logoutFirebase } from './util/firebase';
+import Cookies from "js-cookie";
 
 const router = createBrowserRouter([
   {
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
       const { updateUser } = authProvider
 
       if (await logoutFirebase()) {
+        Cookies.remove("username");
+        Cookies.remove("tokencookie");
+        Cookies.remove("idtokencookie");
+
         updateUser({
           id: "",
           username: "",
