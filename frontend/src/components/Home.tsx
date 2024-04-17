@@ -1,4 +1,4 @@
-import { redirect, useActionData, useFetcher, useNavigation } from "react-router-dom";
+import { redirect, useActionData, useFetcher } from "react-router-dom";
 import { authProvider } from "../util/auth";
 
 export function HomeLayout() {
