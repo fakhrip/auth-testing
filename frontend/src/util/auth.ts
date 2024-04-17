@@ -7,7 +7,9 @@ export async function createAccount(username: string, password: string) {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({
+        user: { username, password },
+      }),
     }
   );
 
@@ -26,7 +28,9 @@ export async function loginAccount(username: string, password: string) {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({
+        user: { username, password },
+      }),
     }
   );
 
