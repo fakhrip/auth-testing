@@ -1,14 +1,15 @@
-import "dotenv/config";
-
 export async function createAccount(username: string, password: string) {
-  const rawResponse = await fetch(`${process.env.BACKEND_BASE_URL}/users`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ username, password }),
-  });
+  const rawResponse = await fetch(
+    `${import.meta.env.VITE_BACKEND_BASE_URL}/users`,
+    {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    }
+  );
 
   return {
     jsonResponse: await rawResponse.json(),
@@ -18,7 +19,7 @@ export async function createAccount(username: string, password: string) {
 
 export async function loginAccount(username: string, password: string) {
   const rawResponse = await fetch(
-    `${process.env.BACKEND_BASE_URL}/users/login`,
+    `${import.meta.env.VITE_BACKEND_BASE_URL}/users/login`,
     {
       method: "POST",
       headers: {
@@ -37,7 +38,7 @@ export async function loginAccount(username: string, password: string) {
 
 export async function deleteAccount(idToken: string) {
   const rawResponse = await fetch(
-    `${process.env.BACKEND_BASE_URL}/users/delete`,
+    `${import.meta.env.VITE_BACKEND_BASE_URL}/users/delete`,
     {
       method: "POST",
       headers: {

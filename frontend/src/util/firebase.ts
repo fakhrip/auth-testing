@@ -1,15 +1,14 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithCustomToken, signOut } from "firebase/auth";
-import "dotenv/config";
 import { IUser } from "../types/user";
 
 const firebaseConfig = {
-  apiKey: process.env.APIKEY,
-  authDomain: process.env.AUTHDOMAIN,
-  projectId: process.env.PROJECTID,
-  storageBucket: process.env.STORAGEBUCKET,
-  messagingSenderId: process.env.MESSAGINGSENDERID,
-  appId: process.env.APPID,
+  apiKey: import.meta.env.VITE_APIKEY,
+  authDomain: import.meta.env.VITE_AUTHDOMAIN,
+  projectId: import.meta.env.VITE_PROJECTID,
+  storageBucket: import.meta.env.VITE_STORAGEBUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSAGINGSENDERID,
+  appId: import.meta.env.VITE_APPID,
 };
 
 export const firebaseApp = initializeApp(firebaseConfig);
