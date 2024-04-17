@@ -2,7 +2,10 @@ import { RouterProvider, createBrowserRouter, redirect } from 'react-router-dom'
 import { LoginAction, LoginLayout, LoginLoader } from './components/Login';
 import { HomeLayout, HomeLoader } from './components/Home';
 import { SignupAction, SignupLayout, SignupLoader } from './components/Signup';
-import { AuthProvider } from './AuthContext';
+import { AuthProvider, useAuth } from './AuthContext';
+import { AuthContextType } from './types/user';
+import { deleteAccount } from './util/auth';
+import { logoutFirebase } from './util/firebase';
 
 const router = createBrowserRouter([
   {
@@ -25,17 +28,33 @@ const router = createBrowserRouter([
       },
       {
         path: "delete",
-        loader: LoginLoader,
-        action() {
-          // TODO: add delete functionality
-          return false
-        },
-        Component() {
-          return (
-            <div>
-              test
-            </div>
-          )
+        loader: HomeLoader,
+        async action() {
+          const { user, updateUser } = useAuth() as AuthContextType
+
+          try {
+            const response = await deleteAccount(user.idToken!)
+            if (response.responseCode === 200) {
+              updateUser({
+                id: "",
+                username: "",
+                token: "",
+                idToken: "",
+                isAuthenticated: false
+              })
+
+              await logoutFirebase();
+              return redirect("/");
+            }
+
+            return {
+              error: response.jsonResponse.message.errors ?? response.jsonResponse.message ?? response.jsonResponse,
+            };
+          } catch (error) {
+            return {
+              error,
+            };
+          }
         },
       },
     ],
@@ -43,7 +62,18 @@ const router = createBrowserRouter([
   {
     path: "/logout",
     async action() {
-      // TODO: add logout functionality
+      const { updateUser } = useAuth() as AuthContextType
+
+      if (await logoutFirebase()) {
+        updateUser({
+          id: "",
+          username: "",
+          token: "",
+          idToken: "",
+          isAuthenticated: false
+        })
+      }
+
       return redirect("/");
     },
   },

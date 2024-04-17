@@ -15,7 +15,7 @@ export function SignupLayout() {
   return (
     <div>
       Signup
-      <fetcher.Form method="post" action="/users">
+      <fetcher.Form method="post" action="/">
         <label>
           Username: <input name="username" />
         </label>

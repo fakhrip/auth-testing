@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithCustomToken } from "firebase/auth";
+import { getAuth, signInWithCustomToken, signOut } from "firebase/auth";
 import "dotenv/config";
 import { IUser } from "../types/user";
 
@@ -31,6 +31,18 @@ export const loginFirebase = async (customToken: string): Promise<IUser> => {
           .catch((error) => {
             reject(error);
           });
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
+export const logoutFirebase = async (): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    signOut(firebaseAuth)
+      .then(() => {
+        resolve(true);
       })
       .catch((error) => {
         reject(error);

@@ -15,7 +15,7 @@ export function LoginLayout() {
   return (
     <div>
       Login
-      <fetcher.Form method="post" action="/users/login">
+      <fetcher.Form method="post" action="/login">
         <label>
           Username: <input name="username" />
         </label>
