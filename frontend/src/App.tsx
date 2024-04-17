@@ -32,7 +32,7 @@ const router = createBrowserRouter([
 
       try {
         const response = await deleteAccount(user.idToken!)
-        if (response.responseCode === 200) {
+        if (response.responseCode < 300) {
           updateUser({
             id: "",
             username: "",
@@ -46,7 +46,7 @@ const router = createBrowserRouter([
         }
 
         return {
-          error: response.jsonResponse.message.errors ?? response.jsonResponse.message ?? response.jsonResponse,
+          error: JSON.stringify(response.jsonResponse.errors ?? response.jsonResponse.message ?? response.jsonResponse)
         };
       } catch (error) {
         return {

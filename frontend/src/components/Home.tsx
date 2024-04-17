@@ -9,7 +9,7 @@ export function HomeLayout() {
   let isDeletingAccount = deleteFetcher.formData != null;
   let isLoggingOut = logoutFetcher.formData != null;
 
-  let actionData = useActionData() as { error: string } | undefined;
+  let actionData = (deleteFetcher.data ?? logoutFetcher.data) as { error: string } | undefined;
 
   return (
     <div>
@@ -20,9 +20,6 @@ export function HomeLayout() {
         <button type="submit" disabled={isDeletingAccount}>
           {isDeletingAccount ? "Deleting account..." : "Delete account"}
         </button>
-        {actionData && actionData.error ? (
-          <p style={{ color: "red" }}>{actionData.error}</p>
-        ) : null}
       </deleteFetcher.Form>
 
       <br />
@@ -30,10 +27,12 @@ export function HomeLayout() {
         <button type="submit" disabled={isLoggingOut}>
           {isLoggingOut ? "Logging out..." : "Logout"}
         </button>
-        {actionData && actionData.error ? (
-          <p style={{ color: "red" }}>{actionData.error}</p>
-        ) : null}
       </logoutFetcher.Form>
+
+      <br />
+      {actionData && actionData.error ? (
+        <p style={{ color: "red" }}>{actionData.error}</p>
+      ) : null}
     </div>
   )
 }

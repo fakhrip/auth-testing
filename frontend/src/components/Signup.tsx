@@ -8,7 +8,7 @@ export function SignupLayout() {
   let navigation = useNavigation();
   let isSigningUp = navigation.formData?.get("username") != null || navigation.formData?.get("password") != null;
 
-  let actionData = useActionData() as { error: string } | undefined;
+  let actionData = fetcher.data as { error: string } | undefined;
 
   return (
     <div>
@@ -35,9 +35,13 @@ export function SignupLayout() {
 }
 
 export function SignupLoader() {
-  // Our root route always provides the user, if logged in
-  // TODO: change this to use data from firebase client
-  return { user: "test" };
+  const { user } = authProvider;
+
+  if (user.isAuthenticated) {
+    return redirect("/")
+  }
+
+  return null
 }
 
 export async function SignupAction({ request }: LoaderFunctionArgs) {
@@ -61,18 +65,18 @@ export async function SignupAction({ request }: LoaderFunctionArgs) {
 
   try {
     const response = await createAccount(username, password)
-    if (response.responseCode === 200) {
+    if (response.responseCode < 300) {
       updateUser({
-        username: response.jsonResponse.username,
-        token: response.jsonResponse.token,
-        ...await loginFirebase(response.jsonResponse.token)
+        username: response.jsonResponse.user.username,
+        token: response.jsonResponse.user.token,
+        ...await loginFirebase(response.jsonResponse.user.token)
       })
 
       return redirect("/");
     }
 
     return {
-      error: response.jsonResponse.message.errors ?? response.jsonResponse.message ?? response.jsonResponse,
+      error: JSON.stringify(response.jsonResponse.errors ?? response.jsonResponse.message ?? response.jsonResponse)
     };
   } catch (error) {
     return {

@@ -8,7 +8,7 @@ export function LoginLayout() {
   let navigation = useNavigation();
   let isSigningUp = navigation.formData?.get("username") != null || navigation.formData?.get("password") != null;
 
-  let actionData = useActionData() as { error: string } | undefined;
+  let actionData = fetcher.data as { error: string } | undefined;
 
   return (
     <div>
@@ -65,18 +65,18 @@ export async function LoginAction({ request }: LoaderFunctionArgs) {
 
   try {
     const response = await loginAccount(username, password)
-    if (response.responseCode === 200) {
+    if (response.responseCode < 300) {
       updateUser({
-        username: response.jsonResponse.username,
-        token: response.jsonResponse.token,
-        ...await loginFirebase(response.jsonResponse.token)
+        username: response.jsonResponse.user.username,
+        token: response.jsonResponse.user.token,
+        ...await loginFirebase(response.jsonResponse.user.token)
       })
 
       return redirect("/");
     }
 
     return {
-      error: response.jsonResponse.message.errors ?? response.jsonResponse.message ?? response.jsonResponse,
+      error: JSON.stringify(response.jsonResponse.errors ?? response.jsonResponse.message ?? response.jsonResponse)
     };
   } catch (error) {
     return {
