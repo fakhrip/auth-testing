@@ -9,6 +9,10 @@ export default defineConfig({
   entitiesTs: ['src/**/*.entity.ts'],
   metadataProvider: TsMorphMetadataProvider,
   extensions: [Migrator],
+  migrations: {
+    path: 'dist/migrations',
+    pathTs: 'src/migrations',
+  },
 
   // Database credentials
   host: process.env.DB_HOST,
