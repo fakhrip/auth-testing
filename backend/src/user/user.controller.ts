@@ -15,7 +15,6 @@ import { UserService } from './user.service';
 import { ValidationPipe } from 'src/util/validation.pipe';
 import { UserDto } from './dto';
 import { FirebaseApp } from 'src/util/firebase';
-import { User as UserEntity } from './user.entity';
 import { User } from './user.decorator';
 
 @Controller()
@@ -57,10 +56,7 @@ export class UserController {
     }
 
     this.userService.updateLatestLogin(foundUser);
-
-    return this.userService.buildUserRO(
-      new UserEntity(foundUser.username, foundUser.password),
-    );
+    return this.userService.buildUserRO(foundUser);
   }
 
   @Post('users/delete')
