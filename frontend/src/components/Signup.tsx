@@ -78,5 +78,4 @@ export async function SignupAction({ request }: LoaderFunctionArgs) {
       error,
     };
   }
-
 }
